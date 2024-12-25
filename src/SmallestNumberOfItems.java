@@ -1,10 +1,30 @@
-
-// Fill the bag with the minimum number of objects possible.
-
-
 public class SmallestNumberOfItems {
-    private int filled = 0; // Total number of object gathered
-    private int filledInKg = 0; // Current weight in the bag
+
+
+    private int fillBagRecursively(int capacity, int[] weights, int filled) {
+        // Base case: If capacity is zero or less, return the number of items used
+        if (capacity <= 0) {
+            return filled;
+        }
+
+        // Try to fit the heaviest possible item
+        for (int weight : weights) {
+            if (weight <= capacity) {
+                return fillBagRecursively(capacity - weight, weights, filled + 1);
+            }
+        }
+
+        // If no item fits, the bag cannot be filled further
+        System.out.println("Bag has space, but no item fits");
+        return filled;
+    }
+
+
+    public String fillBag(int capacity, int[] weights) {
+        sortArrayDescending(weights); // Sort the weights in descending order
+        int result = fillBagRecursively(capacity, weights, 0);
+        return "Items gathered: " + result;
+    }
 
 
     public void sortArrayDescending(int[] arr) {
@@ -12,7 +32,6 @@ public class SmallestNumberOfItems {
             throw new IllegalArgumentException("Array is empty or null");
         }
 
-        // Bubble Sort used
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr.length - 1; j++) {
                 if (arr[j] < arr[j + 1]) {
@@ -24,36 +43,9 @@ public class SmallestNumberOfItems {
         }
     }
 
-
-    public String fillBag(int capacity, int[] weights) {
-        sortArrayDescending(weights); // Sorting
-
-        while (filledInKg < capacity) {
-            int remainingCapacity = capacity - filledInKg;
-
-            // Appropriate object select and fill by checking the remaining capacity
-            boolean itemAdded = false;
-            for (int weight : weights) {
-                if (weight <= remainingCapacity) {
-                    filled++;
-                    filledInKg += weight;
-                    itemAdded = true;
-                    break;
-                }
-            }
-
-            // If no item added but we have space in the bag
-            if (!itemAdded) {
-                System.out.println("Bag has space, but no item fits");
-                return "Items gathered: " + filled;
-            }
-        }
-        return "Items gathered: " + filled;   // If no item added and no space left
-    }
-
     public static void main(String[] args) {
-        int[] weights = {14, 13, 35};
-        int bagCapacity = 120;
+        int[] weights = {1, 3, 5};
+        int bagCapacity = 24;
 
         SmallestNumberOfItems bagFiller = new SmallestNumberOfItems();
         System.out.println(bagFiller.fillBag(bagCapacity, weights));
